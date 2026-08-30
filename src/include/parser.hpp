@@ -21,10 +21,10 @@ class Parser {
         try {
             pugi::xml_parse_result result = source.load_file(filepath.c_str());
             if (result.status != pugi::xml_parse_status::status_ok) {
-                throw new std::exception();
+                throw std::exception();
             }
         } catch (std::exception e) {
-            throw new IngestionException(filepath);
+            throw IngestionException(filepath);
         } 
     }
 
@@ -32,7 +32,7 @@ class Parser {
     void Parse() { //Gonna start workshopping this with the single-threaded version of parsing.
         //First, get all the verses we'll be stripping (should be 31,102 for any standard bible)
         if (source.empty()) {
-            throw new ConversionException(EMPTY);
+            throw ConversionException(EMPTY);
         }
         taskQueue = source.select_nodes(".//*[self::verse]");
         
@@ -54,7 +54,7 @@ class Parser {
                 }
                 stringPool[0] = result;
             } catch (std::exception e) {
-                throw new ConversionException(NONE);
+                throw ConversionException(NONE);
             }
         }
     }
@@ -69,7 +69,7 @@ class Parser {
             output << "}";
             output << std::endl;
         } catch (std::exception e) {
-            throw new PrintException(out);
+            throw PrintException(out);
         }
     }
 

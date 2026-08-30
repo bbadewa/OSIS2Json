@@ -8,13 +8,15 @@ typedef struct {
     std::string out;
     bool multithread;
     int threads;
-    std::string errorMessage;
-    bool err;
 } ParserSettings;
 
 ParserSettings parseArgs(int argc, char* argv[]) {
+
+    if (argc == 1) {
+        throw ArgumentException(EMPTY, "");
+    }
+
     ParserSettings settings;
-    settings.err = false;
     bool argSwitch = true; //True for flags, false for their inputs. 
     bool argType = false; //false for ints, true for strings;
     void* argPtr;
@@ -41,7 +43,7 @@ ParserSettings parseArgs(int argc, char* argv[]) {
                 settings.multithread = true;
                 argPtr = &settings.threads;
             } else {
-                throw new ArgumentException(STRANGE_ARG, arg); 
+                throw ArgumentException(STRANGE_ARG, arg); 
             }
         } else {
             if (argType) {
@@ -50,7 +52,7 @@ ParserSettings parseArgs(int argc, char* argv[]) {
                 try {
                     *(int*)argPtr = std::stoi(arg.c_str());
                 } catch (std::exception e) {
-                    throw new ArgumentException(MALFORMED, arg);
+                    throw ArgumentException(MALFORMED, arg);
                 }
             }
         }
@@ -58,17 +60,13 @@ ParserSettings parseArgs(int argc, char* argv[]) {
         argSwitch = !argSwitch;
     }
     if (!argSwitch) { //Completed early without finishing arguments.
-        throw new ArgumentException(NO_ARG, arg);
+        throw ArgumentException(NO_ARG, arg);
     }
 
     return settings;
 }
 
 
-/*
-Usage should go something like: osis2json -i [OSIS FILE PATH] -o [JSON OUTPUT PATH] for now
-I'll think later of maybe adding multithreading and whatnot.
-*/
 int main(int argc, char* argv[]) {
     try {
         ParserSettings ps = parseArgs(argc, argv);
@@ -76,8 +74,8 @@ int main(int argc, char* argv[]) {
         p.Ingest(ps.in);
         p.Parse();
         p.Print(ps.out);
-    } catch (std::exception e) {
-        std::cout << e.what() << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
         return -1;
     }
     return 0;

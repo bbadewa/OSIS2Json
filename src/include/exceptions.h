@@ -15,11 +15,12 @@ enum ExceptionReason {
 
 //Exceptions
 
+
 class ArgumentException : public std::exception {
     private:
     std::string message;
     public:
-    ArgumentException(ExceptionReason e, std::string arg) {
+    explicit ArgumentException(ExceptionReason e, std::string arg) {
         switch (e) {
             case MISSING_IN:
                 message = "Missing input file (-i [FILEPATH]).";
@@ -39,8 +40,9 @@ class ArgumentException : public std::exception {
             default:
                 break;
         }
+        message += "\nUSAGE: osis2json -i [.xml file in OSIS format] -o [destination] -t [number of threads]";
     }
-    const char* what() {
+    const char* what() const noexcept override  {
         return message.c_str();
     }
 };
@@ -50,7 +52,7 @@ class IngestionException : public std::exception {
     std::string message;
     public:
     IngestionException(std::string filename) { message = "Failed to load file " + filename + "! \n";}
-    const char* what() {
+    const char* what() const noexcept override {
         return message.c_str();
     }
 };
@@ -72,7 +74,7 @@ class ConversionException : public std::exception {
         }
         message += " Please check your file and try again!";
     }
-    const char* what() {
+    const char* what() const noexcept override {
         return message.c_str();
     }
 };
@@ -82,7 +84,7 @@ class PrintException : public std::exception {
     std::string message;
     public:
     PrintException(std::string filename) { message = "Failed to write to file " + filename + "! \n";}
-    const char* what() {
+    const char* what() const noexcept override {
         return message.c_str();
     }
 };
