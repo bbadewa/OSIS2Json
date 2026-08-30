@@ -1,0 +1,11 @@
+# Exclude everything
+/*
+
+# Except for default project files
+!/.github
+!/src
+!.gitignore
+!CMakeLists.txt
+!LICENSE
+!README.md
+
