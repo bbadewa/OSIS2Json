@@ -51,7 +51,7 @@ class IngestionException : public std::exception {
     private:
     std::string message;
     public:
-    IngestionException(std::string filename) { message = "Failed to load file " + filename + "! \n";}
+    IngestionException(std::string filename) { message = "Failed to load file " + filename + "!";}
     const char* what() const noexcept override {
         return message.c_str();
     }
@@ -83,7 +83,7 @@ class PrintException : public std::exception {
     private:
     std::string message;
     public:
-    PrintException(std::string filename) { message = "Failed to write to file " + filename + "! \n";}
+    PrintException(std::string filename) { message = "Failed to write to file " + filename + "! \nPlease ensure the file exists and is not actively being edited!";}
     const char* what() const noexcept override {
         return message.c_str();
     }

@@ -1,14 +1,17 @@
 #include <pugixml.hpp>
 #include <converter.hpp>
 #include <exceptions.h>
-#include <stdio.h>
 #include <string>
 #include <thread>
 #include<fstream>
+#include <filesystem>
 
-const int AVERAGE_REFERENCE_LEN = 148;
-
-
+/*
+    In theory, pre-reserving at least the average amount of string
+    space we'll need for a reference should make the program a little more efficient.
+    So, one Google and some manual character counting later...
+*/
+const int AVERAGE_REFERENCE_LEN = 148;  
 
 class Parser {
     public: 
@@ -29,8 +32,7 @@ class Parser {
     }
 
 
-    void Parse() { //Gonna start workshopping this with the single-threaded version of parsing.
-        //First, get all the verses we'll be stripping (should be 31,102 for any standard bible)
+    void Parse() { 
         if (source.empty()) {
             throw ConversionException(EMPTY);
         }
@@ -60,6 +62,21 @@ class Parser {
     }
 
     void Print(std::string out) {
+
+        using namespace std::filesystem;
+
+        if (!exists(out)) {
+            try {
+               path p = out;
+               path parent = p.parent_path();
+               create_directories(parent);
+            } catch (std::exception e) {
+                throw PrintException(out);
+            }
+        }else if (!is_regular_file(out)) {
+            throw PrintException(out);
+        }
+
         try {
             std::ofstream output(out);
             output << "{\n";

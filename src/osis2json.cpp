@@ -3,6 +3,9 @@
 #include <chrono>
 #include "parser.hpp"
 
+/*
+Argument information.
+*/
 typedef struct {
     std::string in;
     std::string out;
@@ -10,6 +13,12 @@ typedef struct {
     int threads;
 } ParserSettings;
 
+/*
+Parses the arguments we receive from the command line.
+argc: from main->argc, number of arguments including program name itself.
+argv: arguments array, including program name itself.
+Throws ArgumentException if arguments are malformed. 
+*/
 ParserSettings parseArgs(int argc, char* argv[]) {
 
     if (argc == 1) {
@@ -59,7 +68,7 @@ ParserSettings parseArgs(int argc, char* argv[]) {
         idx++;
         argSwitch = !argSwitch;
     }
-    if (!argSwitch) { //Completed early without finishing arguments.
+    if (!argSwitch) { //If we completed early without finishing arguments:
         throw ArgumentException(NO_ARG, arg);
     }
 
