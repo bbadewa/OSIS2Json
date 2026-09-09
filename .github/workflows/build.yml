@@ -56,7 +56,7 @@ jobs:
             -   name: Pretty-print Linux binary
                 if: matrix.os != 'windows-latest'
                 run: |
-                    mv build/my_project build/${{ matrix.artifact_name }}
+                    mv build/osis2json build/${{ matrix.artifact_name }}
             -   name: Upload Build Artifact
                 uses: actions/upload-artifact@v4
                 with:
