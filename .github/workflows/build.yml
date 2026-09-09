@@ -1,0 +1,69 @@
+name: Release Executables
+
+on:
+    push:
+        branches: ["main"]
+    pull_request:
+            branches: ["main"]
+    workflow_dispatch:
+
+jobs:
+    build:
+        name: Build (${{matrix.os}}-${{matrix.arch}})
+        runs-on: ${{matrix.os}}
+        
+        strategy:
+            fail-fast: true
+            matrix:
+                include:
+                    #Linux
+                    -   os: ubuntu-latest
+                        arch: x86_64
+                        cmake_flags: ""
+                        artifact_name: osis2json-linux-x64
+
+                    #Windows 
+                    -   os: windows-latest
+                        arch: x86_64
+                        cmake_flags: "-A x64"
+                        artifact_name: osis2json-windows-x64
+
+                    #Produce one fat binary for MacOS Intel + Apple Silicon
+                    -   os: macos-latest
+                        arch: universal
+                        cmake_flags: "-DCMAKE_OSX_ARCHITECTURES='x86_64;arm64'"
+                        artifact_name: osis2json-macos-universal
+        
+        steps:
+            -   name: Checkout repo
+                uses: actions/checkout@v4
+            -   name: CMake/Ninja setup
+                uses: lukka/get-cmake@latest
+            
+            -   name: Set up CMake
+                run: >
+                    cmake -B build -DCMAKE_BUILD_TYPE=Release ${{matrix.cmake_flags}}
+            
+            -   name: Build it!
+                run: cmake --build build --config Release
+
+            -   name: Pretty-print Windows binary
+                if: matrix.os == 'windows-latest'
+                run: |
+                    mv build/Release/osis2json.exe build/${{matrix.artifact_name}}
+                shell: bash
+
+            -   name: Pretty-print Linux binary
+                if: matrix.os != 'windows-latest'
+                run: |
+                    mv build/my_project build/${{ matrix.artifact_name }}
+            -   name: Upload Build Artifact
+                uses: actions/upload-artifact@v4
+                with:
+                    name: ${{ matrix.artifact_name }}
+                    path: build/${{ matrix.artifact_name }}
+                    if-no-files-found: error
+            
+
+
+

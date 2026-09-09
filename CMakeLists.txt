@@ -21,4 +21,11 @@ add_executable(osis2json ${OSIS2Json_Source})
 target_include_directories(osis2json PUBLIC "src/include/thirdparty")
 target_include_directories(osis2json PUBLIC "src/include")
 
-target_compile_options(osis2json PRIVATE -O3)
+
+if (UNIX) 
+    find_package (Threads REQUIRED)
+    target_link_libraries(osis2json PRIVATE Threads::Threads)
+    target_compile_options(osis2json PRIVATE -O3 -pthread)
+else()
+    target_compile_options(osis2json PRIVATE -O3)
+endif()

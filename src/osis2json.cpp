@@ -32,7 +32,7 @@ ParserSettings parseArgs(int argc, char* argv[]) {
     int idx = 1;
     /*
     We'll tackle the problem like this:
-    First, ingest a switch (-j for threads (jobs), -i for input, -o for output)
+    First, ingest a switch (-t for threads (jobs), -i for input, -o for output)
     This switch will set a pointer to where we'll manipulate our ParserSettings struct.
     Once the thing has been written to, we use the result of the write to either switch back to switch-mode
     or immediately return because there's been an error.
@@ -47,7 +47,7 @@ ParserSettings parseArgs(int argc, char* argv[]) {
             } else if (arg == "-o") {
                 argType = true;
                 argPtr = &settings.out;
-            } else if (arg == "-j") {
+            } else if (arg == "-t") {
                 argType = false;
                 settings.multithread = true;
                 argPtr = &settings.threads;
