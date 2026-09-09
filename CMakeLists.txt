@@ -21,4 +21,4 @@ add_executable(osis2json ${OSIS2Json_Source})
 target_include_directories(osis2json PUBLIC "src/include/thirdparty")
 target_include_directories(osis2json PUBLIC "src/include")
 
-target_compile_options(osis2json PRIVATE -O0)
+target_compile_options(osis2json PRIVATE -O3)
